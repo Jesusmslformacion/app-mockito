@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -67,6 +68,18 @@ class ExamenServiceImplTest {
         Examen examen = service.findExamenPorNombreConPreguntas("Matematicas");
         assertEquals(5, examen.getPreguntas().size());
         assertTrue(examen.getPreguntas().contains("Aritmetica"));
+        verify(repository).findAll();
+        verify(preguntaRepository).findPreguntasPorExamenId(anyLong());
+
+        
+    }
+
+    @Test
+    void testNoExisteExamenVerify() {
+        when(repository.findAll()).thenReturn(Datos.EXAMENES);
+        when(preguntaRepository.findPreguntasPorExamenId(5L)).thenReturn(Datos.PREGUNTAS);
+        Examen examen = service.findExamenPorNombreConPreguntas("Matematicas");
+        assertNull(examen);
         verify(repository).findAll();
         verify(preguntaRepository).findPreguntasPorExamenId(5L);
 
