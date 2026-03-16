@@ -2,6 +2,14 @@ package org.jesus.appmockito.ejemplos.app_mockito;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.exceptions.base.MockitoException;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,18 +30,24 @@ import org.jesus.appmockito.ejemplos.app_mockito.repositories.ExamenRepository;
 import org.jesus.appmockito.ejemplos.app_mockito.repositories.ExamenRepositoryOtro;
 import org.jesus.appmockito.ejemplos.app_mockito.repositories.PreguntaRepository;
 
-
+@ExtendWith(MockitoExtension.class)
 class ExamenServiceImplTest {
 
+    @Mock
     ExamenRepository repository;
-    ExamenService service;
+
+    @Mock
     PreguntaRepository preguntaRepository;
+
+    @InjectMocks
+    ExamenServiceImpl service;
 
     @BeforeEach
     void setUp() {
-        repository = mock(ExamenRepositoryOtro.class);
-        preguntaRepository = mock(PreguntaRepository.class);
-        service = new ExamenServiceImpl(repository, preguntaRepository);
+        //MockitoAnnotations.openMocks(this);
+       //repository = mock(ExamenRepositoryOtro.class);
+        //preguntaRepository = mock(PreguntaRepository.class);
+        //service = new ExamenServiceImpl(repository, preguntaRepository);
         
     }
 
