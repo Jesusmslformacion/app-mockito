@@ -3,6 +3,7 @@ package org.jesus.appmockito.ejemplos.app_mockito;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,7 +13,11 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -162,6 +167,41 @@ class ExamenServiceImplTest {
 
         verify(repository).findAll();
         verify(preguntaRepository).findPreguntasPorExamenId(argThat(arg -> arg !=null && arg.equals(5L)));
+    }
+
+    @Test
+    void testArgumentMatchers2() {
+        when(repository.findAll()).thenReturn(Datos.EXAMENES_ID_NEGATIVOS);
+        when(preguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        service.findExamenPorNombreConPreguntas("Matematicas");
+
+        verify(repository).findAll();
+        verify(preguntaRepository).findPreguntasPorExamenId(argThat(new MiArgsMatchers()));
+    }
+
+    
+
+    
+
+    public static class MiArgsMatchers implements ArgumentMatcher<Long> {
+
+        private Long argument;
+
+        @Override
+        public boolean matches(Long argument) {
+            this.argument = argument;
+            return argument != null && argument > 0;
+        }
+
+        @Override
+        public String toString() {
+            return "Es para un mensaje personalizado de error" + 
+                    " que imprime mockito en caso de que falle el test " +
+                     argument + " debe ser un entero positivo";
+        }
+
+        
+
     }
     
 }
