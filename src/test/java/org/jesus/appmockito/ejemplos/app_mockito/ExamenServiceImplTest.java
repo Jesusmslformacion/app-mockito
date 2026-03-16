@@ -3,6 +3,7 @@ package org.jesus.appmockito.ejemplos.app_mockito;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -139,5 +141,27 @@ class ExamenServiceImplTest {
 
     }
 
+    @Test
+    void testManejoException() {
+        when(repository.findAll()).thenReturn(Datos.EXAMENES_ID_NULL);
+        when(preguntaRepository.findPreguntasPorExamenId(isNull())).thenThrow(IllegalArgumentException.class);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.findExamenPorNombreConPreguntas("Matematicas");
+        });
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+
+        verify(repository).findAll();
+        verify(preguntaRepository).findPreguntasPorExamenId(isNull());
+    }
+
+    @Test
+    void testArgumentMatchers() {
+        when(repository.findAll()).thenReturn(Datos.EXAMENES);
+        when(preguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        service.findExamenPorNombreConPreguntas("Matematicas");
+
+        verify(repository).findAll();
+        verify(preguntaRepository).findPreguntasPorExamenId(argThat(arg -> arg !=null && arg.equals(5L)));
+    }
     
 }
