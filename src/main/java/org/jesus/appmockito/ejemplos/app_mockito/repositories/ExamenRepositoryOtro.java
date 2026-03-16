@@ -8,6 +8,10 @@ import org.jesus.appmockito.ejemplos.app_mockito.ejemplos.models.Examen;
 public class ExamenRepositoryOtro implements ExamenRepository{
 
     @Override
+    public Examen guardar(Examen examen) {
+        return null;
+    }
+    @Override
     public List<Examen> findAll() {
         try {
             System.out.println("ExamenRepositoryOtro");
@@ -17,5 +21,6 @@ public class ExamenRepositoryOtro implements ExamenRepository{
         }
         return null;
     }
+
 
 }
