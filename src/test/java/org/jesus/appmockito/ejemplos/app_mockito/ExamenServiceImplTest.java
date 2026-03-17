@@ -3,8 +3,10 @@ package org.jesus.appmockito.ejemplos.app_mockito;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -51,6 +53,9 @@ class ExamenServiceImplTest {
     @InjectMocks
     ExamenServiceImpl service;
 
+    @Captor
+    ArgumentCaptor<Long> captor;
+    
     @BeforeEach
     void setUp() {
         //MockitoAnnotations.openMocks(this);
@@ -179,6 +184,16 @@ class ExamenServiceImplTest {
         verify(preguntaRepository).findPreguntasPorExamenId(argThat(new MiArgsMatchers()));
     }
 
+    @Test
+    void testArgumentMatchers3() {
+        when(repository.findAll()).thenReturn(Datos.EXAMENES_ID_NEGATIVOS);
+        when(preguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        service.findExamenPorNombreConPreguntas("Matematicas");
+
+        verify(repository).findAll();
+        verify(preguntaRepository).findPreguntasPorExamenId(argThat( (argument) -> argument != null && argument > 0 ));
+    }
+
     
 
     
@@ -202,6 +217,18 @@ class ExamenServiceImplTest {
 
         
 
+    }
+
+    @Test
+    void testArgumentCaptor() {
+        when(repository.findAll()).thenReturn(Datos.EXAMENES);
+        //when(preguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        service.findExamenPorNombreConPreguntas("Matematicas");
+
+        //ArgumentCaptor<Long> captor = ArgumentCaptor.forClass(Long.class);
+        verify(preguntaRepository).findPreguntasPorExamenId(captor.capture());
+
+        assertEquals(5L, captor.getValue());
     }
     
 }
