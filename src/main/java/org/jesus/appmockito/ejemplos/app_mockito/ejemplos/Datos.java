@@ -1,4 +1,4 @@
-package org.jesus.appmockito.ejemplos.app_mockito;
+package org.jesus.appmockito.ejemplos.app_mockito.ejemplos;
 
 import java.util.Arrays;
 import java.util.List;
